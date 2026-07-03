@@ -1,0 +1,14 @@
+{
+  "name": "c-xiaozhi-client",
+  "version": "1.0.0",
+  "dependencies": [
+    "qt6-base",
+    "qt6-declarative",
+    "qt6-multimedia",
+    "qt6-websockets",
+    "qt6-tools",
+    "paho-mqtt-cpp",
+    "nlohmann-json",
+    "sqlite3"
+  ]
+}
