@@ -27,36 +27,18 @@ jobs:
       - name: Configure CMake
         shell: cmd
         run: |
-          cmake -B build -S . ^
-            -DCMAKE_PREFIX_PATH=%Qt6_DIR%
+          cmake -B build -S . -DCMAKE_PREFIX_PATH=%Qt6_DIR%
 
       - name: Build
         run: cmake --build build --config Release
-
-      - name: Find EXE
-        shell: cmd
-        run: |
-          dir build /s
 
       - name: Deploy Qt
         shell: cmd
         run: |
           mkdir release
-          "%Qt6_DIR%\bin\windeployqt.exe" ^
-            --release ^
-            --qmldir qml ^
-            build\Release\XiaozhiClient.exe ^
-            --dir release
-
-      - name: Copy executable
-        shell: cmd
-        run: |
           copy build\Release\XiaozhiClient.exe release\
-
-      - name: Copy QML
-        shell: cmd
-        run: |
-          xcopy qml release\qml /E /I /Y
+          :: ใช้ windeployqt เพื่อรวมไฟล์ DLL ที่จำเป็นมาไว้ในโฟลเดอร์ release
+          "%Qt6_DIR%\bin\windeployqt.exe" --release --qmldir qml release\XiaozhiClient.exe
 
       - name: Create ZIP
         shell: powershell
