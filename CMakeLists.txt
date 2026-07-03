@@ -5,7 +5,11 @@ project(XiaozhiClient VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Qml)
+find_package(Qt6 REQUIRED COMPONENTS
+    Quick
+    Qml
+    QuickControls2
+)
 
 qt_standard_project_setup()
 
@@ -21,5 +25,8 @@ qt_add_qml_module(XiaozhiClient
 )
 
 target_link_libraries(XiaozhiClient
-    PRIVATE Qt6::Quick Qt6::Qml
+    PRIVATE
+        Qt6::Quick
+        Qt6::Qml
+        Qt6::QuickControls2
 )
