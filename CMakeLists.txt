@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 3.21)
 
 project(XiaozhiClient VERSION 1.0 LANGUAGES CXX)
 
-# ตั้งค่าเป็น C++20 เพื่อให้รองรับมาตรฐานของ Qt 6.5+ และแก้ปัญหา stdext
+# ตั้งค่าเป็น C++20 เพื่อให้รองรับมาตรฐานของ Qt 6.5+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# ป้องกันปัญหา Vulkan บน GitHub Actions
+set(QT_NO_VULKAN TRUE)
 
 # ค้นหาไฟล์ .cpp และ .h ทั้งหมดในโฟลเดอร์ src ให้อัตโนมัติ
 file(GLOB_RECURSE SRC_FILES 
