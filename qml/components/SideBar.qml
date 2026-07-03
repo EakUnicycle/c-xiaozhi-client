@@ -13,12 +13,12 @@ Rectangle {
         anchors.margins: 10
         spacing: 10
         
-        // 顶部：用户头像 + 添加设备按钮
+        // Top: User Avatar + Add Device Button
         Row {
             Layout.fillWidth: true
             spacing: 10
             
-            // 用户头像
+            // User Avatar
             Rectangle {
                 width: 50
                 height: 50
@@ -27,7 +27,7 @@ Rectangle {
                 
                 Text {
                     anchors.centerIn: parent
-                    text: "我"
+                    text: "Me"
                     font.pixelSize: 20
                     color: Theme.textColor
                 }
@@ -37,7 +37,7 @@ Rectangle {
                 Layout.fillWidth: true
             }
             
-            // 添加设备按钮
+            // Add Device Button
             Button {
                 text: "+"
                 width: 40
@@ -51,13 +51,13 @@ Rectangle {
                     }
                 }
                 
-                // 工具提示
+                // ToolTip
                 ToolTip.visible: !enabled && hovered
-                ToolTip.text: "最多只能添加2个智能体"
+                ToolTip.text: "Maximum of 2 agents can be added"
             }
         }
         
-        // 设备数量提示
+        // Device Count Hint
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 30
@@ -67,13 +67,13 @@ Rectangle {
             
             Text {
                 anchors.centerIn: parent
-                text: "智能体: " + appModel.deviceList.length + "/2"
+                text: "Agent: " + appModel.deviceList.length + "/2"
                 font.pixelSize: Theme.fontSizeSmall
                 color: Theme.textColor
             }
         }
         
-        // 设备列表
+        // Device List
         ListView {
             id: deviceListView
             Layout.fillWidth: true
@@ -97,7 +97,7 @@ Rectangle {
                 }
                 
                 onDoubleClicked: {
-                    // 双击设备自动连接OTA
+                    // Double click device to auto-connect OTA
                     appModel.selectDevice(model.deviceId)
                     appModel.connectDevice(model.deviceId)
                 }
@@ -117,11 +117,11 @@ Rectangle {
             }
         }
         
-        // 底部：关于按钮
+        // Bottom: About Button
         Button {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
-            text: "ℹ 关于"
+            text: "ℹ About"
             font.pixelSize: Theme.fontSizeMedium
             
             background: Rectangle {
@@ -142,29 +142,29 @@ Rectangle {
         }
     }
     
-    // 添加设备对话框
+    // Add Device Dialog
     AddDeviceDialog {
         id: addDeviceDialog
     }
     
-    // 关于对话框
+    // About Dialog
     AboutDialog {
         id: aboutDialog
     }
     
-    // 编辑设备对话框
+    // Edit Device Dialog
     EditDeviceDialog {
         id: editDeviceDialog
     }
     
-    // 监听设备列表变化
+    // Listen to device list changes
     Connections {
         target: appModel
         function onDeviceListChanged() {
             updateDeviceList()
         }
         
-        // 监听连接状态变化
+        // Listen to connection status changes
         function onConnectedChanged() {
             updateDeviceList()
         }
@@ -174,7 +174,7 @@ Rectangle {
         }
     }
     
-    // 更新设备列表
+    // Update Device List
     function updateDeviceList() {
         deviceListModel.clear()
         var devices = appModel.deviceInfoList
@@ -187,4 +187,3 @@ Rectangle {
         updateDeviceList()
     }
 }
-

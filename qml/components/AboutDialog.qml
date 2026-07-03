@@ -1,11 +1,11 @@
 /*
 Project: jtxiaozhi-client
 Version: v0.1.0
-Author: jtserver团队
+Author: jtserver team
 Email: jwhna1@gmail.com
 Updated: 2025-01-13T15:35:00Z
 File: AboutDialog.qml
-Desc: 关于对话框组件 - 显示程序信息和版本详情
+Desc: About dialog component – displays application information and version details.
 */
 
 import QtQuick
@@ -21,16 +21,16 @@ Popup {
     modal: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     
-    // 使用窗口 Overlay 进行全窗口居中
+    // Use window Overlay for full-window centering
     anchors.centerIn: Overlay.overlay
     
-    // 对话框背景
+    // Dialog background
     background: Rectangle {
         color: Theme.backgroundColor
         border.width: 0
         radius: 12
         
-        // 添加拖拽功能
+        // Add drag functionality
         MouseArea {
             anchors.fill: parent
             drag.target: root
@@ -44,7 +44,7 @@ Popup {
         }
     }
     
-    // 标题栏
+    // Title bar
     Rectangle {
         id: titleBar
         anchors.top: parent.top
@@ -58,7 +58,7 @@ Popup {
             anchors.margins: 16
             spacing: 12
             
-            // 应用图标
+            // Application icon
             Rectangle {
                 Layout.preferredWidth: 32
                 Layout.preferredHeight: 32
@@ -67,7 +67,7 @@ Popup {
                 
                 Text {
                     anchors.centerIn: parent
-                    text: "智"
+                    text: "AI"
                     font.pixelSize: 18
                     font.bold: true
                     color: "#FFFFFF"
@@ -75,14 +75,14 @@ Popup {
             }
             
             Text {
-                text: "关于小智跨平台客户端"
+                text: "About Xiaozhi Cross-Platform Client"
                 font.pixelSize: 18
                 font.bold: true
                 color: Theme.textColor
                 Layout.fillWidth: true
             }
             
-            // 关闭按钮
+            // Close button
             Button {
                 text: "✕"
                 width: 28
@@ -103,7 +103,7 @@ Popup {
         }
     }
     
-    // 主内容区域
+    // Main content area
     ScrollView {
         anchors.top: titleBar.bottom
         anchors.left: parent.left
@@ -116,7 +116,7 @@ Popup {
             spacing: 16
             anchors.margins: 16
             
-            // 应用信息卡片
+            // App info card
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 100
@@ -139,7 +139,7 @@ Popup {
                     }
 
                     TextEdit {
-                        text: "基于虾哥xiaozhi-esp32固件源码灵感编写 | 免费使用 | 交流无套路"
+                        text: "Inspired by the xiaozhi-esp32 open-source firmware | Free to Use"
                         font.pixelSize: 12
                         color: Theme.textColor
                         Layout.alignment: Qt.AlignHCenter
@@ -150,7 +150,7 @@ Popup {
                 }
             }
             
-            // 服务器兼容性说明
+            // Server compatibility notice
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 120
@@ -162,7 +162,7 @@ Popup {
                     spacing: 6
 
                     TextEdit {
-                        text: "服务器兼容性说明"
+                        text: "Server Compatibility Notice"
                         font.pixelSize: 16
                         font.bold: true
                         color: Theme.textColor
@@ -171,7 +171,7 @@ Popup {
                     }
 
                     TextEdit {
-                        text: "• 虾哥官方服务器：https://xiaozhi.me/\n• xinnan-tech开源服务器：https://github.com/xinnan-tech/xiaozhi-esp32-server\n• jtxiaozhi-server商用服务版：支持高级功能和订制优化。可联系我们获取商业服务端+app购买\n• 其他版本：暂未测试，如有不兼容可反馈后续兼容"
+                        text: "• Official Xiaozhi Server: https://xiaozhi.me/\n• Xinnan-Tech Open Source Server: https://github.com/xinnan-tech/xiaozhi-esp32-server\n• jtxiaozhi-server commercial version: Supports advanced features and customized optimizations. Contact us for commercial licensing.\n• Other versions: Not yet tested. Please provide feedback if you encounter compatibility issues, and we will work on support."
                         font.pixelSize: 11
                         color: Theme.textColor
                         wrapMode: TextEdit.WordWrap
@@ -182,7 +182,7 @@ Popup {
                 }
             }
             
-            // 重要链接信息
+            // Important links
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 140
@@ -194,7 +194,7 @@ Popup {
                     spacing: 4
 
                     TextEdit {
-                        text: "相关链接"
+                        text: "Relevant Links"
                         font.pixelSize: 16
                         font.bold: true
                         color: Theme.textColor
@@ -208,7 +208,7 @@ Popup {
                         columnSpacing: 12
                         Layout.fillWidth: true
 
-                        TextEdit { text: "ESP32固件源码:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
+                        TextEdit { text: "ESP32 Firmware Source:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
                         TextEdit {
                             Layout.fillWidth: true
                             text: "https://github.com/78/xiaozhi-esp32"
@@ -223,7 +223,7 @@ Popup {
                             }
                         }
 
-                        TextEdit { text: "开源服务器:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
+                        TextEdit { text: "Open Source Server:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
                         TextEdit {
                             Layout.fillWidth: true
                             text: "https://github.com/xinnan-tech/xiaozhi-esp32-server"
@@ -238,7 +238,7 @@ Popup {
                             }
                         }
 
-                        TextEdit { text: "Git仓库地址:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
+                        TextEdit { text: "GitHub Repository:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
                         TextEdit {
                             Layout.fillWidth: true
                             text: "https://github.com/jwhna1"
@@ -253,7 +253,7 @@ Popup {
                             }
                         }
 
-                        TextEdit { text: "B站地址:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
+                        TextEdit { text: "Bilibili Channel:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
                         TextEdit {
                             Layout.fillWidth: true
                             text: "https://space.bilibili.com/298384872"
@@ -271,7 +271,7 @@ Popup {
                 }
             }
             
-            // 联系方式信息
+            // Contact information
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 80
@@ -283,7 +283,7 @@ Popup {
                     spacing: 4
 
                     TextEdit {
-                        text: "联系我们"
+                        text: "Contact Us"
                         font.pixelSize: 16
                         font.bold: true
                         color: Theme.textColor
@@ -297,19 +297,19 @@ Popup {
                         columnSpacing: 12
                         Layout.fillWidth: true
 
-                        TextEdit { text: "开发团队:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
-                        TextEdit { text: "jtserver团队(曾能混，tang先森)"; color: Theme.primaryColor; font.pixelSize: 11; readOnly: true; selectByMouse: true; Layout.fillWidth: true }
+                        TextEdit { text: "Development Team:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
+                        TextEdit { text: "Zeng Neng-Hun"; color: Theme.primaryColor; font.pixelSize: 11; readOnly: true; selectByMouse: true; Layout.fillWidth: true }
 
-                        TextEdit { text: "商务邮箱:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
+                        TextEdit { text: "Business Email:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
                         TextEdit { text: "jwhna1@gmail.com"; color: Theme.primaryColor; font.pixelSize: 11; readOnly: true; selectByMouse: true; Layout.fillWidth: true }
 
-                        TextEdit { text: "联系方式:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
-                        TextEdit { text: "QQ: 7280051 | 微信: cxshow066（添加好友时请注明来意）"; color: Theme.primaryColor; font.pixelSize: 11; readOnly: true; selectByMouse: true; Layout.fillWidth: true; wrapMode: TextEdit.Wrap }
+                        TextEdit { text: "Contact:"; color: Theme.textColor; font.pixelSize: 11; font.bold: true; readOnly: true; selectByMouse: true }
+                        TextEdit { text: "QQ: 7280051 | WeChat: cxshow066 (Please state your purpose when adding)"; color: Theme.primaryColor; font.pixelSize: 11; readOnly: true; selectByMouse: true; Layout.fillWidth: true; wrapMode: TextEdit.Wrap }
                     }
                 }
             }
             
-            // 免费声明
+            // This software is completely free to use. We do not charge any fees or use deceptive sales tactics.
             Rectangle {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 100
@@ -321,7 +321,7 @@ Popup {
                     spacing: 6
 
                     TextEdit {
-                        text: "免费使用声明"
+                        text: "Free Usage Statement"
                         font.pixelSize: 16
                         font.bold: true
                         color: "#e74c3c"
@@ -330,7 +330,7 @@ Popup {
                     }
 
                     TextEdit {
-                        text: "本程序为免费使用，交流无套路，任何向您收取费用的行为与本团队无关。我们承诺软件永久免费，不会以任何形式收取使用费用。如遇到有人收费，请警惕并向我们举报。"
+                        text: "This program is free to use, and our communication is open and without tricks. Any behavior charging you for this service is unrelated to our team. We promise the software is permanently free and will not charge for usage in any form. If you encounter anyone charging fees, please be alert and report it to us."
                         font.pixelSize: 11
                         color: Theme.textColor
                         wrapMode: TextEdit.WordWrap
@@ -340,7 +340,7 @@ Popup {
                     }
 
                     TextEdit {
-                        text: "© 2025 jtserver团队. ."
+                        text: "© 2025 jtserver Team. All rights reserved."
                         font.pixelSize: 10
                         color: Theme.timestampColor
                         Layout.alignment: Qt.AlignHCenter
@@ -353,7 +353,7 @@ Popup {
         }
     }
     
-    // 底部按钮
+    // Bottom button
     Rectangle {
         id: footerBar
         anchors.bottom: parent.bottom
@@ -370,7 +370,7 @@ Popup {
             Item { Layout.fillWidth: true }
 
             Button {
-                text: "检查更新"
+                text: "Check for Updates"
                 Layout.preferredWidth: 100
                 Layout.preferredHeight: 32
                 visible: appModel && appModel.updateManager
@@ -403,7 +403,7 @@ Popup {
             }
 
             Button {
-                text: "确定"
+                text: "OK"
                 Layout.preferredWidth: 80
                 Layout.preferredHeight: 32
                 background: Rectangle {

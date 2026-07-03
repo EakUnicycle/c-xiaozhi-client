@@ -5,7 +5,7 @@ import "../theme"
 
 Dialog {
     id: root
-    title: "编辑设备"
+    title: "Edit Device"
     modal: true
     anchors.centerIn: parent
     width: 500
@@ -27,13 +27,13 @@ Dialog {
         anchors.margins: 20
         spacing: 15
         
-        // 设备名称输入
+        // Device name input
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5
             
             Text {
-                text: "设备名称："
+                text: "Device Name:"
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.textColor
             }
@@ -41,18 +41,18 @@ Dialog {
             TextField {
                 id: deviceNameField
                 Layout.fillWidth: true
-                placeholderText: "请输入设备名称"
+                placeholderText: "Please enter device name"
                 text: root.deviceName
             }
         }
         
-        // OTA地址输入
+        // OTA URL input
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5
             
             Text {
-                text: "OTA服务器地址："
+                text: "OTA Server URL:"
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.textColor
             }
@@ -65,13 +65,13 @@ Dialog {
             }
         }
         
-        // MAC地址显示（只读）
+        // MAC address display (read-only)
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5
             
             Text {
-                text: "MAC地址（不可修改）："
+                text: "MAC Address (cannot be modified):"
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.textColor
             }
@@ -85,7 +85,7 @@ Dialog {
             }
         }
         
-        // 错误提示
+        // Error message
         Text {
             id: errorText
             Layout.fillWidth: true
@@ -100,7 +100,7 @@ Dialog {
             Layout.fillHeight: true
         }
         
-        // 按钮
+        // Buttons
         RowLayout {
             Layout.fillWidth: true
             spacing: 10
@@ -110,24 +110,24 @@ Dialog {
             }
             
             Button {
-                text: "取消"
+                text: "Cancel"
                 onClicked: root.close()
             }
             
             Button {
-                text: "保存"
+                text: "Save"
                 highlighted: true
                 onClicked: {
-                    // 验证输入
+                    // Validate input
                     var errors = []
                     
                     if (deviceNameField.text.trim() === "") {
-                        errors.push("设备名称不能为空")
+                        errors.push("Device name cannot be empty")
                     }
                     
                     var otaUrl = otaUrlField.text.trim()
                     if (!otaUrl.startsWith("http://") && !otaUrl.startsWith("https://")) {
-                        errors.push("OTA地址格式不正确（必须以http://或https://开头）")
+                        errors.push("Invalid OTA URL format (must start with http:// or https://)")
                     }
                     
                     if (errors.length > 0) {
@@ -135,7 +135,7 @@ Dialog {
                         return
                     }
                     
-                    // 更新设备（这里需要调用AppModel的方法）
+                    // Update device (requires calling AppModel method)
                     appModel.updateDevice(
                         root.deviceId,
                         deviceNameField.text.trim(),
@@ -156,5 +156,3 @@ Dialog {
         errorText.text = ""
     }
 }
-
-

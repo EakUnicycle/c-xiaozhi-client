@@ -13,20 +13,20 @@ Rectangle {
         anchors.margins: 10
         spacing: 10
         
-        // 状态信息栏
+        // Status information bar
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: 70  // 稍微增加高度，为按钮留出更多空间
+            Layout.preferredHeight: 70  // Slightly increased height to provide more space for the button
             color: Theme.highlightColor
-            radius: 8  // 增加圆角，与按钮保持一致
+            radius: 8  // Increased corner radius to match the button
 
             RowLayout {
                 anchors.fill: parent
-                anchors.margins: 18  // 增加边距，给按钮更多呼吸空间
-                spacing: 20  // 增加元素间距，避免视觉拥挤
+                anchors.margins: 18  // Increased margins for more breathing room
+                spacing: 20  // Increased spacing between elements to avoid visual crowding
 
                 Text {
-                    text: "状态："
+                    text: "Status:"
                     font.pixelSize: Theme.fontSizeMedium
                     color: Theme.textColor
                 }
@@ -38,7 +38,7 @@ Rectangle {
                     color: appModel.connected ? Theme.successColor : Theme.textColor
                 }
 
-                // 使用间距代替分割线
+                // Use spacing instead of a divider line
                 Item {
                     Layout.preferredWidth: 1
                     visible: appModel.conversationManager !== null
@@ -48,9 +48,9 @@ Rectangle {
                     text: {
                         if (!appModel.conversationManager) return ""
                         switch(appModel.conversationManager.state) {
-                            case 0: return "💤 空闲"     // Idle
-                            case 1: return "👂 聆听中"   // Listening
-                            case 2: return "🗣️ 说话中"   // Speaking
+                            case 0: return "💤 Idle"
+                            case 1: return "👂 Listening"
+                            case 2: return "🗣️ Speaking"
                             default: return ""
                         }
                     }
@@ -59,8 +59,8 @@ Rectangle {
                     color: {
                         if (!appModel.conversationManager) return Theme.textColor
                         switch(appModel.conversationManager.state) {
-                            case 1: return "#4CAF50"  // 绿色（聆听）
-                            case 2: return "#2196F3"  // 蓝色（说话）
+                            case 1: return "#4CAF50"  // Green (Listening)
+                            case 2: return "#2196F3"  // Blue (Speaking)
                             default: return Theme.textColor
                         }
                     }
@@ -71,24 +71,24 @@ Rectangle {
                     Layout.fillWidth: true
                 }
                 
-                // 连接按钮（触发完整OTA流程：OTA -> MQTT -> UDP自动建立）
+                // Connect button (triggers complete OTA flow: OTA -> MQTT -> UDP automatic establishment)
                 Button {
-                    text: appModel.connected ? "🔌 断开连接" : "🔗 连接"
-                    Layout.preferredHeight: 40  // 增加高度，更好地融入状态栏
+                    text: appModel.connected ? "🔌 Disconnect" : "🔗 Connect"
+                    Layout.preferredHeight: 40  // Increased height for better integration into the status bar
                     Layout.preferredWidth: 120
-                    Layout.alignment: Qt.AlignVCenter  // 垂直居中对齐
+                    Layout.alignment: Qt.AlignVCenter  // Vertically centered
                     font.pixelSize: Theme.fontSizeMedium
                     
                     background: Rectangle {
-                        // 优化背景色，实现更好的视觉融合
+                        // Optimized background color for better visual integration
                         color: {
                             if (parent.hovered) {
-                                return appModel.connected ? "#ff6b6b" : "#4CAF50"  // 悬停时显示状态色
+                                return appModel.connected ? "#ff6b6b" : "#4CAF50"  // Status color when hovered
                             } else {
-                                return appModel.connected ? "#e8f4fd" : "#e8f4fd"  // 默认使用更浅的蓝色，与状态栏协调
+                                return appModel.connected ? "#e8f4fd" : "#e8f4fd"  // Default light blue to match status bar
                             }
                         }
-                        radius: 8  // 增加圆角，更现代化
+                        radius: 8  // Increased radius for a modern look
                         border.width: 1
                         border.color: {
                             if (parent.hovered) {
@@ -103,9 +103,9 @@ Rectangle {
                         text: parent.text
                         color: {
                             if (parent.parent.hovered) {
-                                return "#FFFFFF"  // 悬停时白色文字
+                                return "#FFFFFF"  // White text when hovered
                             } else {
-                                return appModel.connected ? Theme.textColor : Theme.textColor  // 默认文字色
+                                return appModel.connected ? Theme.textColor : Theme.textColor  // Default text color
                             }
                         }
                         horizontalAlignment: Text.AlignHCenter
@@ -114,12 +114,12 @@ Rectangle {
                         font.bold: (parent.parent && parent.parent.hovered) || false
                     }
                     
-                    // 添加平滑的过渡动画
+                    // Added smooth transition animation
                     Behavior on scale {
                         NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
                     }
                     
-                    // 悬停效果
+                    // Hover effect
                     onHoveredChanged: {
                         if (hovered) {
                             scale = 1.05
@@ -132,7 +132,7 @@ Rectangle {
                         if (appModel.connected) {
                             appModel.disconnectDevice(appModel.currentDeviceId)
                         } else {
-                            // 连接：获取OTA配置 -> 自动连接MQTT -> 自动发送hello -> 自动建立UDP
+                            // Connect: Get OTA config -> Auto-connect MQTT -> Auto-send hello -> Auto-establish UDP
                             appModel.connectDevice(appModel.currentDeviceId)
                         }
                     }
@@ -140,7 +140,7 @@ Rectangle {
             }
         }
         
-        // 聊天消息列表（替换原日志显示）
+        // Chat message list (replaces original log display)
         ScrollView {
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -150,11 +150,11 @@ Rectangle {
                 id: chatListView
                 spacing: 8
                 
-                model: appModel.chatMessages  // 绑定到AppModel
+                model: appModel.chatMessages  // Bound to AppModel
                 
                 delegate: ChatBubble {
                     width: chatListView.width
-                    // 使用modelData访问QVariantMap中的字段
+                    // Use modelData to access fields in QVariantMap
                     messageId: (modelData && modelData.id) ? modelData.id : -1
                     isUser: modelData && (modelData.messageType === "stt" || 
                                           modelData.messageType === "text" || 
@@ -167,7 +167,7 @@ Rectangle {
                     messageType: (modelData && modelData.messageType) ? modelData.messageType : ""
                 }
                 
-                // 自动滚动到底部
+                // Auto-scroll to bottom
                 onCountChanged: {
                     Qt.callLater(() => {
                         chatListView.positionViewAtEnd()
@@ -177,12 +177,11 @@ Rectangle {
         }
     }
     
-    // 监听设备切换，刷新聊天记录
+    // Listen for device switching to refresh chat history
     Connections {
         target: appModel
         function onCurrentDeviceIdChanged() {
-            // AppModel内部会自动加载新设备的聊天记录
+            // AppModel internally handles loading chat history for the new device
         }
     }
 }
-

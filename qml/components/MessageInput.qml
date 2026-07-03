@@ -14,12 +14,12 @@ Rectangle {
         spacing: 10
         
         
-        // 文本输入框
+        // Text input field
         TextField {
             id: messageTextField
             Layout.fillWidth: true
             Layout.preferredHeight: 40
-            placeholderText: "输入文字发送......"
+            placeholderText: "Enter text to send......"
 
             background: Rectangle {
                 color: Theme.backgroundColor
@@ -33,14 +33,14 @@ Rectangle {
             }
         }
         
-        // 发送按钮
+        // Send button
         Button {
             text: "📤"
             width: 50
             height: 40
             font.pixelSize: 20
             ToolTip.visible: hovered
-            ToolTip.text: "发送消息"
+            ToolTip.text: "Send message"
 
             background: Rectangle {
                 color: parent.hovered ? Theme.primaryColor : Theme.buttonColor
@@ -60,19 +60,19 @@ Rectangle {
             onClicked: sendMessage()
         }
         
-        // 右侧功能按钮
+        // Right-side function buttons
         Row {
-            spacing: 8  // 增加按钮间距，让界面更清爽
+            spacing: 8  // Increase button spacing for a cleaner interface
 
-            // 麦克风按钮（录音）
+            // Microphone button (Recording)
             Button {
                 width: 50
                 height: 40
                 text: appModel.conversationManager && appModel.conversationManager.isRecording ? "⏹️" : "🎤"
                 font.pixelSize: 20
                 ToolTip.visible: hovered
-                ToolTip.text: appModel.conversationManager && appModel.conversationManager.isRecording ? "停止录音" : "开始对话"
-                enabled: appModel.connected  // MQTT连接后即可用
+                ToolTip.text: appModel.conversationManager && appModel.conversationManager.isRecording ? "Stop recording" : "Start conversation"
+                enabled: appModel.connected  // Available after MQTT is connected
 
                 background: Rectangle {
                     color: parent.enabled ? (parent.hovered ? Theme.highlightColor : Theme.buttonColor) : "transparent"
@@ -86,21 +86,21 @@ Rectangle {
                         if (appModel.conversationManager.isRecording) {
                             appModel.conversationManager.stopRecording()
                         } else {
-                            // 点击开始对话，自动建立UDP（如果未建立）
+                            // Click to start conversation, automatically establish UDP (if not already established)
                             appModel.conversationManager.startConversation()
                         }
                     }
                 }
             }
 
-            // 中止按钮（说话状态时显示）
+            // Abort button (Visible during speaking state)
             Button {
                 width: 50
                 height: 40
                 text: "⏸️"
                 font.pixelSize: 20
                 ToolTip.visible: hovered
-                ToolTip.text: "中止说话"
+                ToolTip.text: "Abort speaking"
                 visible: appModel.conversationManager && appModel.conversationManager.state === 2  // Speaking = 2
                 enabled: appModel.conversationManager !== null
 
@@ -129,4 +129,3 @@ Rectangle {
     }
     
 }
-

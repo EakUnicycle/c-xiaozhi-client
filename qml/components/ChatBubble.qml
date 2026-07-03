@@ -1,11 +1,11 @@
 /*
 Project: jtxiaozhi-client
 Version: v0.1.0
-Author: jtserver团队
+Author: jtserver team
 Email: jwhna1@gmail.com
 Updated: 2025-01-12T08:30:00Z
 File: ChatBubble.qml
-Desc: 聊天气泡组件（支持文字和音频播放）
+Desc: Chat bubble component (supports text and audio playback)
 */
 
 import QtQuick 2.15
@@ -17,17 +17,17 @@ import "../theme"
 Rectangle {
     id: root
     
-    // 属性
-    property bool isUser: false      // true=用户(右侧), false=智能体(左侧)
+    // Properties
+    property bool isUser: false      // true=User(right), false=Agent(left)
     property string messageText: ""
-    property string audioPath: ""    // 音频文件路径
-    property string imagePath: ""    // 图片文件路径
+    property string audioPath: ""    // Audio file path
+    property string imagePath: ""    // Image file path
     property bool hasAudio: audioPath !== ""
     property bool hasImage: imagePath !== ""
     property bool isPlaying: false
     property int messageId: -1
-    property int timestamp: 0        // 消息时间戳
-    property string messageType: ""  // 消息类型，用于判断是否为激活码消息
+    property int timestamp: 0        // Message timestamp
+    property string messageType: ""  // Message type, used to identify activation code messages
     
     width: parent.width
     height: bubbleColumn.height + 20
@@ -37,13 +37,13 @@ Rectangle {
         anchors.fill: parent
         spacing: 10
         
-        // 左侧占位（用户在右侧 → 需要左侧拉伸）
+        // Left spacer (User is on the right → requires left stretch)
         Item { 
             Layout.fillWidth: root.isUser
             visible: root.isUser
         }
         
-        // 气泡容器
+        // Bubble container
         Rectangle {
             Layout.preferredWidth: Math.min(bubbleColumn.implicitWidth + 20, root.width * 0.7)
             Layout.preferredHeight: bubbleColumn.height + 20
@@ -57,7 +57,7 @@ Rectangle {
                 width: parent.width - 20
                 spacing: 8
                 
-                // 文字内容（使用TextEdit以支持文本选择和复制）
+                // Text content (uses TextEdit for text selection and copying)
                 TextEdit {
                     id: messageTextEdit
                     Layout.fillWidth: true
@@ -70,7 +70,7 @@ Rectangle {
                     selectByMouse: true
                     selectByKeyboard: true
                     
-                    // 右键菜单
+                    // Right-click menu
                     MouseArea {
                         anchors.fill: parent
                         acceptedButtons: Qt.RightButton
@@ -82,14 +82,14 @@ Rectangle {
                     Menu {
                         id: contextMenu
                         MenuItem {
-                            text: "复制"
+                            text: "Copy"
                             enabled: messageTextEdit.selectedText !== ""
                             onTriggered: {
                                 messageTextEdit.copy()
                             }
                         }
                         MenuItem {
-                            text: "全选"
+                            text: "Select All"
                             onTriggered: {
                                 messageTextEdit.selectAll()
                             }
@@ -97,7 +97,7 @@ Rectangle {
                     }
                 }
                 
-                // 激活码消息的特殊处理 - 简化版本，显示完整原始文本
+                // Special handling for activation code messages - simplified version, displays raw text
                 Rectangle {
                     visible: root.messageType === "activation"
                     Layout.fillWidth: true
@@ -118,7 +118,7 @@ Rectangle {
                         selectByMouse: true
                         selectByKeyboard: true
                         
-                        // 右键菜单
+                        // Right-click menu
                         MouseArea {
                             anchors.fill: parent
                             acceptedButtons: Qt.RightButton
@@ -130,14 +130,14 @@ Rectangle {
                         Menu {
                             id: activationContextMenu
                             MenuItem {
-                                text: "复制"
+                                text: "Copy"
                                 enabled: activationText.selectedText !== ""
                                 onTriggered: {
                                     activationText.copy()
                                 }
                             }
                             MenuItem {
-                                text: "全选"
+                                text: "Select All"
                                 onTriggered: {
                                     activationText.selectAll()
                                 }
@@ -146,7 +146,7 @@ Rectangle {
                     }
                 }
                 
-                // 图片预览（如果有图片）
+                // Image preview (if applicable)
                 Rectangle {
                     visible: root.hasImage
                     Layout.preferredWidth: 200
@@ -165,25 +165,25 @@ Rectangle {
                         smooth: true
                         cache: false
                         
-                        // 加载指示器
+                        // Loading indicator
                         BusyIndicator {
                             anchors.centerIn: parent
                             running: previewImage.status === Image.Loading
                             visible: running
                         }
                         
-                        // 加载失败提示
+                        // Load failure prompt
                         Text {
                             anchors.centerIn: parent
                             visible: previewImage.status === Image.Error
-                            text: "❌ 图片加载失败"
+                            text: "❌ Image failed to load"
                             color: Theme.textColor
                         }
 
-                        // 错误处理：停止重试加载
+                        // Error handling: stop retry loading
                         onStatusChanged: {
                             if (status === Image.Error) {
-                                // 延迟清空source以停止重试，避免持续报错
+                                // Delay clearing source to stop retry and prevent continuous errors
                                 errorTimer.restart()
                             }
                         }
@@ -206,11 +206,11 @@ Rectangle {
                     }
                 }
                 
-                // 音频播放按钮
+                // Audio playback button
                 Button {
                     visible: root.hasAudio
                     Layout.alignment: Qt.AlignRight
-                    text: root.isPlaying ? "⏸ 停止" : "▶ 播放音频"
+                    text: root.isPlaying ? "⏸ Stop" : "▶ Play Audio"
                     font.pixelSize: Theme.fontSizeSmall
                     font.family: Theme.fontFamily
                     
@@ -237,7 +237,7 @@ Rectangle {
                     }
                 }
                 
-                // 时间戳
+                // Timestamp
                 Text {
                     Layout.alignment: Qt.AlignRight
                     text: {
@@ -254,23 +254,23 @@ Rectangle {
             }
         }
         
-        // 右侧占位（智能体在左侧 → 需要右侧拉伸）
+        // Right spacer (Agent is on the left → requires right stretch)
         Item { 
             Layout.fillWidth: !root.isUser
             visible: !root.isUser
         }
     }
     
-    // 动画效果
+    // Animation effect
     Behavior on opacity {
         NumberAnimation { duration: 200 }
     }
     
-    // 鼠标悬停效果（不拦截子项点击）
+    // Hover effect (does not block children clicks)
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
-        acceptedButtons: Qt.NoButton  // 仅用于hover，不接收点击，避免吞掉按钮点击
+        acceptedButtons: Qt.NoButton  // Only for hover, do not accept clicks to prevent swallowing button clicks
         propagateComposedEvents: true
         onEntered: {
             if (root.hasAudio) root.opacity = 0.9
@@ -278,17 +278,17 @@ Rectangle {
         onExited: root.opacity = 1.0
     }
     
-    // 图片查看窗口（独立窗口，可移动、可调整大小、支持缩放）
+    // Image viewer window (independent window, movable, resizable, supports zooming)
     Window {
         id: imageViewWindow
-        title: "图片预览"
+        title: "Image Preview"
         modality: Qt.ApplicationModal
-        flags: Qt.Window | Qt.FramelessWindowHint  // 无边框窗口
+        flags: Qt.Window | Qt.FramelessWindowHint  // Frameless window
         color: "transparent"
         
-        property real zoomScale: 0.5  // 缩放比例（默认50%）
+        property real zoomScale: 0.5  // Scaling ratio (default 50%)
         
-        // 根据图片大小自适应窗口尺寸（默认50%）
+        // Adaptive window size based on image (default 50%)
         width: {
             if (fullImage.status === Image.Ready && fullImage.implicitWidth > 0) {
                 return Math.min(fullImage.implicitWidth * 0.5 + 40, Screen.width * 0.9)
@@ -302,7 +302,7 @@ Rectangle {
             return 500
         }
         
-        // 居中显示
+        // Centered display
         Component.onCompleted: {
             x = (Screen.width - width) / 2
             y = (Screen.height - height) / 2
@@ -310,22 +310,22 @@ Rectangle {
         
         Rectangle {
             anchors.fill: parent
-            color: Theme.backgroundColor  // 纯色背景：浅色主题白色，深色主题黑色
+            color: Theme.backgroundColor  // Solid background: light theme white, dark theme black
             
-            // 自定义标题栏（可拖动）
+            // Custom title bar (draggable)
             Rectangle {
                 id: titleBar
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: 40
-                color: Theme.backgroundColor  // 与主背景同色
+                color: Theme.backgroundColor  // Same color as main background
                 
                 Text {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.leftMargin: 15
-                    text: "📷 图片预览"
+                    text: "📷 Image Preview"
                     color: Theme.textColor
                     font.pixelSize: 14
                     font.bold: true
@@ -337,7 +337,7 @@ Rectangle {
                     anchors.rightMargin: 10
                     spacing: 5
                     
-                    // 最小化按钮
+                    // Minimize button
                     Button {
                         width: 30
                         height: 30
@@ -360,7 +360,7 @@ Rectangle {
                         onClicked: imageViewWindow.showMinimized()
                     }
                     
-                    // 最大化/还原按钮
+                    // Maximize/Restore button
                     Button {
                         width: 30
                         height: 30
@@ -389,7 +389,7 @@ Rectangle {
                         }
                     }
                     
-                    // 关闭按钮
+                    // Close button
                     Button {
                         width: 30
                         height: 30
@@ -414,7 +414,7 @@ Rectangle {
                     }
                 }
                 
-                // 拖动区域
+                // Dragging area
                 MouseArea {
                     anchors.fill: parent
                     anchors.rightMargin: 120
@@ -442,14 +442,14 @@ Rectangle {
                 }
             }
             
-            // 工具栏（缩放控制）
+            // Toolbar (Zoom controls)
             Rectangle {
                 id: toolbar
                 anchors.top: titleBar.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
                 height: 60
-                color: Theme.backgroundColor  // 与主背景同色
+                color: Theme.backgroundColor  // Same color as main background
                 
                 RowLayout {
                     anchors.fill: parent
@@ -457,7 +457,7 @@ Rectangle {
                     spacing: 10
                     
                     Text {
-                        text: "缩放:"
+                        text: "Zoom:"
                         color: Theme.textColor
                     }
                     
@@ -476,7 +476,7 @@ Rectangle {
                         Layout.fillWidth: true
                         from: 0.25
                         to: 4.0
-                        value: 0.5  // 默认50%
+                        value: 0.5  // Default 50%
                         stepSize: 0.25
                         
                         onValueChanged: {
@@ -501,14 +501,14 @@ Rectangle {
                     }
                     
                     Button {
-                        text: "适配"
+                        text: "Fit"
                         onClicked: {
                             zoomSlider.value = 1.0
                         }
                     }
                     
                     Button {
-                        text: "原始"
+                        text: "Original"
                         onClicked: {
                             if (fullImage.status === Image.Ready && fullImage.implicitWidth > 0) {
                                 var fitScale = Math.min(
@@ -539,11 +539,11 @@ Rectangle {
                 Image {
                     id: fullImage
                     source: root.hasImage ? ("file:///" + root.imagePath) : ""
-                    fillMode: Image.PreserveAspectFit  // 保持比例，完整显示
+                    fillMode: Image.PreserveAspectFit  // Maintain ratio, display fully
                     smooth: true
                     cache: false
                     
-                    // 根据缩放比例调整显示区域尺寸
+                    // Adjust display area size according to scaling ratio
                     width: implicitWidth * imageViewWindow.zoomScale
                     height: implicitHeight * imageViewWindow.zoomScale
                     
@@ -556,16 +556,16 @@ Rectangle {
                     Text {
                         anchors.centerIn: parent
                         visible: fullImage.status === Image.Error
-                        text: "❌ 图片加载失败\n路径: " + root.imagePath
+                        text: "❌ Image failed to load\nPath: " + root.imagePath
                         color: Theme.textColor
                         wrapMode: Text.Wrap
                         horizontalAlignment: Text.AlignHCenter
                     }
 
-                    // 错误处理：停止重试加载
+                    // Error handling: stop retry loading
                     onStatusChanged: {
                         if (status === Image.Error) {
-                            // 延迟清空source以停止重试，避免持续报错
+                            // Delay clearing source to stop retry and prevent continuous errors
                             fullImageErrorTimer.restart()
                         }
                     }

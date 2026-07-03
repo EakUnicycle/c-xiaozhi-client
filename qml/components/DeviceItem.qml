@@ -32,7 +32,7 @@ Rectangle {
         anchors.margins: 10
         spacing: 10
         
-        // 设备头像
+        // Device avatar
         Rectangle {
             width: 50
             height: 50
@@ -47,7 +47,7 @@ Rectangle {
             }
         }
         
-        // 设备信息
+        // Device information
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 3
@@ -60,36 +60,36 @@ Rectangle {
             }
             
             Text {
-                text: connected ? "🟢 已连接" : "⚪ 未连接"
+                text: connected ? "🟢 Connected" : "⚪ Disconnected"
                 font.pixelSize: Theme.fontSizeSmall
                 color: connected ? Theme.successColor : Theme.textColor
                 opacity: 0.8
             }
         }
         
-        // 操作按钮
+        // Action buttons
         Row {
             spacing: 5
             
-            // 编辑按钮
+            // Edit button
             Button {
                 text: "✏️"
                 width: 30
                 height: 30
                 font.pixelSize: 14
                 ToolTip.visible: hovered
-                ToolTip.text: "编辑设备"
+                ToolTip.text: "Edit device"
                 onClicked: root.editClicked()
             }
             
-            // 删除按钮
+            // Delete button
             Button {
                 text: "🗑️"
                 width: 30
                 height: 30
                 font.pixelSize: 14
                 ToolTip.visible: hovered
-                ToolTip.text: "删除设备"
+                ToolTip.text: "Delete device"
                 onClicked: {
                     deleteConfirmDialog.open()
                 }
@@ -97,17 +97,17 @@ Rectangle {
         }
     }
     
-    // 删除确认对话框
+    // Delete confirmation dialog
     Dialog {
         id: deleteConfirmDialog
-        title: "确认删除"
+        title: "Confirm Deletion"
         modal: true
         anchors.centerIn: parent
         width: 300
         height: 150
         
         contentItem: Text {
-            text: "确定要删除设备 \"" + deviceName + "\" 吗？\n删除后无法恢复。"
+            text: "Are you sure you want to delete the device \"" + deviceName + "\"?\nThis cannot be undone."
             font.pixelSize: Theme.fontSizeMedium
             color: Theme.textColor
         }
@@ -119,4 +119,3 @@ Rectangle {
         }
     }
 }
-

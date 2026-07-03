@@ -5,7 +5,7 @@ import "../theme"
 
 Dialog {
     id: root
-    title: "添加智能体设备"
+    title: "Add Agent Device"
     modal: true
     anchors.centerIn: parent
     width: 500
@@ -22,13 +22,13 @@ Dialog {
         anchors.margins: 20
         spacing: 15
         
-        // 设备名称输入
+        // Device name input
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5
             
             Text {
-                text: "设备名称："
+                text: "Device Name:"
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.textColor
             }
@@ -36,18 +36,18 @@ Dialog {
             TextField {
                 id: deviceNameField
                 Layout.fillWidth: true
-                placeholderText: "请输入设备名称（如：智能体小智）"
+                placeholderText: "Please enter device name (e.g., Agent Xiaozhi)"
                 text: ""
             }
         }
         
-        // OTA地址输入
+        // OTA URL input
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5
             
             Text {
-                text: "OTA服务器地址："
+                text: "OTA Server URL:"
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.textColor
             }
@@ -60,13 +60,13 @@ Dialog {
             }
         }
         
-        // MAC地址输入
+        // MAC address input
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 5
             
             Text {
-                text: "MAC地址："
+                text: "MAC Address:"
                 font.pixelSize: Theme.fontSizeMedium
                 color: Theme.textColor
             }
@@ -83,7 +83,7 @@ Dialog {
                 }
                 
                 Button {
-                    text: "随机生成"
+                    text: "Random Generate"
                     onClicked: {
                         macAddressField.text = appModel.generateRandomMac()
                     }
@@ -91,7 +91,7 @@ Dialog {
             }
         }
         
-        // 限制提示
+        // Restriction notice
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
@@ -106,7 +106,7 @@ Dialog {
                 
                 Text {
                     Layout.fillWidth: true
-                    text: " 智能体添加规则："
+                    text: " Agent Addition Rules:"
                     font.pixelSize: Theme.fontSizeSmall
                     font.bold: true
                     color: Theme.textColor
@@ -114,21 +114,21 @@ Dialog {
                 
                 Text {
                     Layout.fillWidth: true
-                    text: "• 最多只能添加2个智能体"
+                    text: "• You can only add up to 2 agents"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.textColor
                 }
                 
                 Text {
                     Layout.fillWidth: true
-                    text: "• 虾哥官方服务器只能添加1个"
+                    text: "• Only 1 agent can be added to the official server"
                     font.pixelSize: Theme.fontSizeSmall
                     color: Theme.textColor
                 }
             }
         }
         
-        // 错误提示
+        // Error message
         Text {
             id: errorText
             Layout.fillWidth: true
@@ -143,7 +143,7 @@ Dialog {
             Layout.fillHeight: true
         }
         
-        // 按钮
+        // Buttons
         RowLayout {
             Layout.fillWidth: true
             spacing: 10
@@ -153,30 +153,30 @@ Dialog {
             }
             
             Button {
-                text: "取消"
+                text: "Cancel"
                 onClicked: root.close()
             }
             
             Button {
-                text: "确定"
+                text: "OK"
                 highlighted: true
                 onClicked: {
-                    // 验证输入
+                    // Validate input
                     var errors = []
                     
                     if (deviceNameField.text.trim() === "") {
-                        errors.push("设备名称不能为空")
+                        errors.push("Device name cannot be empty")
                     }
                     
                     var otaUrl = otaUrlField.text.trim()
                     if (!otaUrl.startsWith("http://") && !otaUrl.startsWith("https://")) {
-                        errors.push("OTA地址格式不正确（必须以http://或https://开头）")
+                        errors.push("Invalid OTA URL format (must start with http:// or https://)")
                     }
                     
                     var mac = macAddressField.text.trim().toLowerCase()
                     var macRegex = /^([0-9a-f]{2}:){5}[0-9a-f]{2}$/
                     if (!macRegex.test(mac)) {
-                        errors.push("MAC地址格式不正确（必须是小写的xx:xx:xx:xx:xx:xx格式）")
+                        errors.push("Invalid MAC address format (must be lowercase xx:xx:xx:xx:xx:xx format)")
                     }
                     
                     if (errors.length > 0) {
@@ -184,21 +184,21 @@ Dialog {
                         return
                     }
                     
-                    // 检查设备添加限制
+                    // Check addition limits
                     var checkResult = appModel.canAddDevice(otaUrl)
                     if (!checkResult.canAdd) {
                         errorText.text = checkResult.errorMessage
                         return
                     }
                     
-                    // 添加设备
+                    // Add device
                     appModel.addDevice(
                         deviceNameField.text.trim(),
                         otaUrl,
                         mac
                     )
                     
-                    // 清空表单
+                    // Clear form
                     deviceNameField.text = ""
                     otaUrlField.text = "https://api.tenclass.net/xiaozhi/ota/"
                     macAddressField.text = appModel.generateRandomMac()
@@ -210,4 +210,3 @@ Dialog {
         }
     }
 }
-

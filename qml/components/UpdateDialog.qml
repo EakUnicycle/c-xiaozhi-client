@@ -1,11 +1,11 @@
 /*
 Project: jtxiaozhi-client
 Version: v0.1.0
-Author: jtserver团队
+Author: jtserver team
 Email: jwhna1@gmail.com
 Updated: 2025-10-18T11:15:00Z
 File: UpdateDialog.qml
-Desc: 版本升级对话框
+Desc: Version upgrade dialog
 */
 
 import QtQuick
@@ -16,14 +16,14 @@ import "../theme"
 
 Dialog {
     id: root
-    title: "🚀 版本升级"
+    title: "🚀 Version Upgrade"
     modal: true
     width: 600
     height: 500
     anchors.centerIn: parent
     closePolicy: Dialog.CloseOnEscape | Popup.CloseOnPressOutside
 
-    // 自定义属性
+    // Custom properties
     property var updateManager: null
     property alias downloadProgress: progressBar.value
 
@@ -38,12 +38,12 @@ Dialog {
         anchors.margins: 20
         spacing: 20
 
-        // 头部信息
+        // Header Information
         RowLayout {
             Layout.fillWidth: true
             spacing: 15
 
-            // 图标
+            // Icon
             Rectangle {
                 width: 48
                 height: 48
@@ -62,23 +62,22 @@ Dialog {
                 spacing: 5
 
                 Text {
-                    text: "发现新版本"
+                    text: "New version found"
                     font.pixelSize: Theme.fontSizeLarge
                     font.bold: true
                     color: Theme.textColor
                 }
 
                 Text {
-                    text: updateManager ?
-                           ("当前版本: " + updateManager.currentVersion + " → 最新版本: " + updateManager.latestVersion) :
-                           "正在检查版本信息..."
+                    text: updateManager ? ("Current version: " + updateManager.currentVersion + " → Latest version: " + updateManager.latestVersion) :
+                           "Checking version information..."
                     font.pixelSize: Theme.fontSizeMedium
                     color: Theme.primaryColor
                 }
             }
         }
 
-        // 版本信息
+        // Version Information
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 120
@@ -93,8 +92,8 @@ Dialog {
                 TextArea {
                     id: releaseNotesText
                     text: (updateManager && updateManager.releaseInfo && updateManager.releaseInfo.isValid) ?
-                         (updateManager.releaseInfo.body + "\n\n📂 下载地址: https://github.com/jwhna1/jtxiaozhi-client/releases") :
-                         "正在获取更新内容..."
+                          (updateManager.releaseInfo.body + "\n\n📂 Download Link: https://github.com/jwhna1/jtxiaozhi-client/releases") :
+                          "Getting update content..."
                     font.pixelSize: Theme.fontSizeMedium
                     color: Theme.textColor
                     wrapMode: TextArea.Wrap
@@ -109,7 +108,7 @@ Dialog {
             }
         }
 
-        // 下载进度
+        // Download Progress
         Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 60
@@ -121,7 +120,7 @@ Dialog {
                 spacing: 10
 
                 Text {
-                    text: updateManager ? (updateManager.updateStatusText || "准备下载...") : "准备下载..."
+                    text: updateManager ? (updateManager.updateStatusText || "Preparing download...") : "Preparing download..."
                     font.pixelSize: Theme.fontSizeMedium
                     color: Theme.textColor
                 }
@@ -147,7 +146,7 @@ Dialog {
             }
         }
 
-        // 状态信息
+        // Status Information
         Text {
             Layout.fillWidth: true
             text: updateManager ? (updateManager.updateStatusText || "") : ""
@@ -157,12 +156,12 @@ Dialog {
             horizontalAlignment: Text.AlignHCenter
         }
 
-        // 按钮区域
+        // Button Area
         RowLayout {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignRight
 
-            // GitHub链接按钮
+            // GitHub Link Button
             Button {
                 text: "📂 GitHub"
                 Layout.preferredWidth: 100
@@ -189,9 +188,9 @@ Dialog {
                 }
             }
 
-            // 取消按钮
+            // Cancel Button
             Button {
-                text: "取消"
+                text: "Cancel"
                 Layout.preferredWidth: 80
                 Layout.preferredHeight: 36
                 visible: updateManager && updateManager.status !== undefined && updateManager.status === UpdateManager.UpdateAvailable
@@ -214,9 +213,9 @@ Dialog {
                 onClicked: root.close()
             }
 
-            // 稍后提醒按钮
+            // Remind Me Later Button
             Button {
-                text: "稍后提醒"
+                text: "Remind Later"
                 Layout.preferredWidth: 80
                 Layout.preferredHeight: 36
                 visible: updateManager && updateManager.status !== undefined && updateManager.status === UpdateManager.UpdateAvailable
@@ -239,9 +238,9 @@ Dialog {
                 onClicked: root.close()
             }
 
-            // 下载按钮
+            // Download/Update Button
             Button {
-                text: "立即更新"
+                text: "Update Now"
                 Layout.preferredWidth: 100
                 Layout.preferredHeight: 36
                 visible: updateManager && updateManager.status !== undefined && updateManager.status === UpdateManager.UpdateAvailable
@@ -270,9 +269,9 @@ Dialog {
                 }
             }
 
-            // 安装按钮
+            // Install Button
             Button {
-                text: "安装更新"
+                text: "Install Update"
                 Layout.preferredWidth: 100
                 Layout.preferredHeight: 36
                 visible: updateManager && updateManager.status !== undefined && updateManager.status === UpdateManager.InstallReady
@@ -301,9 +300,9 @@ Dialog {
                 }
             }
 
-            // 重试按钮
+            // Retry Button
             Button {
-                text: "重试"
+                text: "Retry"
                 Layout.preferredWidth: 80
                 Layout.preferredHeight: 36
                 visible: updateManager && updateManager.status !== undefined && (updateManager.status === UpdateManager.DownloadFailed ||
@@ -333,7 +332,7 @@ Dialog {
         }
     }
 
-    // 监听更新管理器状态变化
+    // Listen for update manager status changes
     Connections {
         target: updateManager
 
@@ -350,16 +349,16 @@ Dialog {
                     }
                     break
                 case UpdateManager.InstallReady:
-                    // 安装就绪时保持对话框打开
+                    // Keep dialog open when installation is ready
                     break
                 case UpdateManager.DownloadFailed:
-                    // 下载失败时保持对话框打开，显示重试按钮
+                    // Keep dialog open on download failure to show retry button
                     break
             }
         }
     }
 
-    // 手动检查更新
+    // Manual check for updates
     function checkForUpdates() {
         if (updateManager) {
             root.open()
@@ -367,7 +366,7 @@ Dialog {
         }
     }
 
-    // 显示更新可用
+    // Show update available
     function showUpdateAvailable() {
         root.open()
     }

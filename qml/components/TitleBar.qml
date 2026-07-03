@@ -8,7 +8,7 @@ Rectangle {
     color: Theme.backgroundColor
     border.width: 0
     
-    // 窗口拖动区域
+    // Window drag area
     MouseArea {
         id: dragArea
         anchors.fill: parent
@@ -38,12 +38,12 @@ Rectangle {
         anchors.margins: 10
         spacing: 15
         
-        // 左侧：程序名称和版本
+        // Left: Application Name and Version
         Row {
             spacing: 15
             Layout.fillWidth: true
             
-            // 应用图标
+            // App Icon
             Rectangle {
                 width: 32
                 height: 32
@@ -60,7 +60,7 @@ Rectangle {
                 }
             }
             
-            // 程序名称和版本
+            // Program Name and Version
             Text {
                 text: appModel.getAppTitle()
                 font.pixelSize: Theme.fontSizeMedium
@@ -70,34 +70,34 @@ Rectangle {
             }
         }
         
-        // 右侧：控制按钮
+        // Right: Control Buttons
         Row {
             id: controlButtons
             spacing: 5
             
-            // 设置按钮
+            // Settings Button
             Button {
                 text: "⚙️"
                 width: 35
                 height: 35
                 onClicked: settingsDialog.open()
                 ToolTip.visible: hovered
-                ToolTip.text: "设置"
+                ToolTip.text: "Settings"
                 ToolTip.delay: 500
             }
             
-            // 主题切换按钮
+            // Theme Toggle Button
             Button {
                 text: appModel.isDarkTheme ? "☀" : "🌙"
                 width: 35
                 height: 35
                 onClicked: appModel.toggleTheme()
                 ToolTip.visible: hovered
-                ToolTip.text: appModel.isDarkTheme ? "切换到浅色主题" : "切换到深色主题"
+                ToolTip.text: appModel.isDarkTheme ? "Switch to light theme" : "Switch to dark theme"
                 ToolTip.delay: 500
             }
             
-            // 最小化按钮
+            // Minimize Button
             Button {
                 text: "—"
                 width: 35
@@ -105,7 +105,7 @@ Rectangle {
                 onClicked: Window.window.showMinimized()
             }
             
-            // 最大化/还原按钮
+            // Maximize/Restore Button
             Button {
                 text: Window.window.visibility === Window.Maximized ? "❐" : "□"
                 width: 35
@@ -119,7 +119,7 @@ Rectangle {
                 }
             }
             
-            // 关闭按钮
+            // Close Button
             Button {
                 text: "✕"
                 width: 35
@@ -142,4 +142,3 @@ Rectangle {
     }
     
   }
-
