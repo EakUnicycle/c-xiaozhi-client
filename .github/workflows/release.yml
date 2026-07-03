@@ -1,0 +1,53 @@
+name: Release Windows Build
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        version: 6.5.0
+        host: windows
+        target: desktop
+
+    - name: Configure
+      run: cmake -B build -S .
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    # 🔥 สำคัญ: windeployqt
+    - name: Deploy Qt (windeployqt)
+      shell: cmd
+      run: |
+        %Qt6_DIR%\bin\windeployqt.exe ^
+          --release ^
+          --qmldir qml ^
+          build\Release\XiaozhiClient.exe ^
+          --dir release
+
+    - name: Copy extra files
+      shell: cmd
+      run: |
+        xcopy qml release\qml /E /I /Y
+        xcopy assets release\assets /E /I /Y
+
+    - name: Zip
+      run: powershell Compress-Archive -Path release\* -DestinationPath XiaozhiClient.zip
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: XiaozhiClient.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
