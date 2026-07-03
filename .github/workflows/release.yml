@@ -11,21 +11,16 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
-      - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
         with:
-          vcpkgGitCommitId: 'a1e3e57140416954a26e6435f3d79155f960f25c'
+          version: '6.5.3'
+          modules: 'qtmultimedia qtwebsockets'
+          cache: true
 
-      - name: Run CMake with vcpkg
-        uses: lukka/run-cmake@v10
-        with:
-          cmakeListsOrSettingsJson: 'CMakeLists.txt'
-          useVcpkgToolchainFile: true
-          buildDirectory: '${{ github.workspace }}/build'
-          cmakeAppendedArgs: '-DCMAKE_BUILD_TYPE=Release'
+      - name: Configure CMake
+        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 
       - name: Build
         run: cmake --build build --config Release
@@ -35,7 +30,6 @@ jobs:
         run: |
           mkdir release
           copy build\Release\XiaozhiClient.exe release\
-          :: vcpkg จะเตรียม Qt ไว้ในสภาพแวดล้อมอยู่แล้ว
           windeployqt --release --qmldir qml release\XiaozhiClient.exe
 
       - name: Create ZIP
