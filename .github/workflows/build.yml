@@ -1,0 +1,50 @@
+name: Build Windows Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: 'a1e3e57140416954a26e6435f3d79155f960f25c'
+
+      - name: Run CMake with vcpkg
+        uses: lukka/run-cmake@v10
+        with:
+          cmakeListsOrSettingsJson: 'CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          buildDirectory: '${{ github.workspace }}/build'
+          cmakeAppendedArgs: '-DCMAKE_BUILD_TYPE=Release'
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Deploy
+        shell: cmd
+        run: |
+          mkdir release
+          copy build\Release\XiaozhiClient.exe release\
+          :: vcpkg จะเตรียม Qt ไว้ในสภาพแวดล้อมอยู่แล้ว
+          windeployqt --release --qmldir qml release\XiaozhiClient.exe
+
+      - name: Create ZIP
+        shell: powershell
+        run: Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: XiaozhiClient-Windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
