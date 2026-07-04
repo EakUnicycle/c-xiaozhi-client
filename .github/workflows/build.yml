@@ -1,43 +1,90 @@
-name: Build Windows
+name: Build Windows Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
 
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
+      # ----------------------------
+      # Checkout
+      # ----------------------------
       - name: Checkout source
         uses: actions/checkout@v4
-      - name: Install Ninja
-        uses: seanmiddleditch/gha-setup-ninja@v5
-      - name: Install Qt
+
+      # ----------------------------
+      # Qt
+      # ----------------------------
+      - name: Setup Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: "6.8.3"
           host: "windows"
           target: "desktop"
           arch: "win64_msvc2022_64"
-          modules: "all"
-      - name: Configure CMake
-        run: |
-          cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=Release
-      - name: Build Project
-        run: |
-          cmake --build build --config Release
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: xiaozhi-build
-          path: |
-            build/**/*.exe
-            build/**/Release/*
-      - name: Deploy Qt
-        shell: pwsh
-        run: |
-          $exe = Get-ChildItem -Path build -Recurse -Filter *.exe | Select-Object -First 1
-          $env:PATH = "$env:Qt6_DIR\bin;$env:PATH"
-          windeployqt $exe.FullName
+          modules: "qtmultimedia qtwebsockets"
 
+      # ----------------------------
+      # Setup vcpkg (FULL FIX)
+      # ----------------------------
+      - name: Setup vcpkg
+        shell: cmd
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          bootstrap-vcpkg.bat
+
+      - name: Set VCPKG_ROOT
+        shell: cmd
+        run: echo VCPKG_ROOT=%GITHUB_WORKSPACE%\vcpkg>> %GITHUB_ENV%
+
+      # ----------------------------
+      # Configure CMake (IMPORTANT FIX)
+      # ----------------------------
+      - name: Configure CMake
+        shell: cmd
+        run: |
+          cmake -B build -S . -G Ninja ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
+            -DVCPKG_MANIFEST_MODE=ON
+
+      # ----------------------------
+      # Build
+      # ----------------------------
+      - name: Build
+        run: cmake --build build --config Release
+
+      # ----------------------------
+      # Deploy Qt runtime
+      # ----------------------------
+      - name: Deploy
+        shell: cmd
+        run: |
+          mkdir release
+          copy build\Release\XiaozhiClient.exe release\
+
+          set PATH=%QT_ROOT_DIR%\bin;%PATH%
+          windeployqt --release --qmldir qml release\XiaozhiClient.exe
+
+      # ----------------------------
+      # ZIP
+      # ----------------------------
+      - name: Create ZIP
+        shell: powershell
+        run: |
+          Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
+
+      # ----------------------------
+      # Release
+      # ----------------------------
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: XiaozhiClient-Windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
