@@ -141,7 +141,9 @@ Dialog {
     Dialog {
         id: confirmDialog
         title: "Confirm Save"
-        modal: true anchors.centerIn: parent; standardButtons: Dialog.Yes | Dialog.No
+        modal: true
+        anchors.centerIn: parent
+        standardButtons: Dialog.Yes | Dialog.No
         
         Label {
             text: "Are you sure you want to save audio device settings?"
