@@ -8,34 +8,79 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
+      # ----------------------------
+      # 1. Checkout
+      # ----------------------------
       - name: Checkout source
         uses: actions/checkout@v4
 
+      # ----------------------------
+      # 2. Qt
+      # ----------------------------
       - name: Setup Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '6.5.3'
-          modules: 'qtmultimedia qtwebsockets'
-          cache: true
+          version: "6.8.3"
+          host: "windows"
+          target: "desktop"
+          arch: "win64_msvc2022_64"
+          modules: "qtmultimedia qtwebsockets"
 
+      # ----------------------------
+      # 3. Setup vcpkg
+      # ----------------------------
+      - name: Setup vcpkg
+        shell: cmd
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          bootstrap-vcpkg.bat
+
+      - name: Set VCPKG_ROOT
+        shell: cmd
+        run: echo VCPKG_ROOT=%GITHUB_WORKSPACE%\vcpkg>> %GITHUB_ENV%
+
+      # ----------------------------
+      # 4. Configure CMake
+      # ----------------------------
       - name: Configure CMake
-        run: cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+        shell: cmd
+        run: |
+          cmake -B build -S . -G Ninja ^
+            -DCMAKE_BUILD_TYPE=Release ^
+            -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake
 
+      # ----------------------------
+      # 5. Build
+      # ----------------------------
       - name: Build
         run: cmake --build build --config Release
 
+      # ----------------------------
+      # 6. Deploy Qt runtime
+      # ----------------------------
       - name: Deploy
         shell: cmd
         run: |
           mkdir release
           copy build\Release\XiaozhiClient.exe release\
+
+          set PATH=%QT_ROOT_DIR%\bin;%PATH%
           windeployqt --release --qmldir qml release\XiaozhiClient.exe
 
+      # ----------------------------
+      # 7. Zip
+      # ----------------------------
       - name: Create ZIP
         shell: powershell
-        run: Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
+        run: |
+          Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
 
+      # ----------------------------
+      # 8. GitHub Release
+      # ----------------------------
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
