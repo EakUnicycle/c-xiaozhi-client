@@ -10,15 +10,15 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # ----------------------------
-      # Checkout
-      # ----------------------------
+      # =========================
+      # 1. Checkout
+      # =========================
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # ----------------------------
-      # Qt
-      # ----------------------------
+      # =========================
+      # 2. Qt Setup
+      # =========================
       - name: Setup Qt
         uses: jurplel/install-qt-action@v4
         with:
@@ -28,9 +28,9 @@ jobs:
           arch: "win64_msvc2022_64"
           modules: "qtmultimedia qtwebsockets"
 
-      # ----------------------------
-      # Setup vcpkg (FULL FIX)
-      # ----------------------------
+      # =========================
+      # 3. Setup vcpkg
+      # =========================
       - name: Setup vcpkg
         shell: cmd
         run: |
@@ -42,27 +42,37 @@ jobs:
         shell: cmd
         run: echo VCPKG_ROOT=%GITHUB_WORKSPACE%\vcpkg>> %GITHUB_ENV%
 
-      # ----------------------------
-      # Configure CMake (IMPORTANT FIX)
-      # ----------------------------
+      # =========================
+      # 4. Install dependencies (IMPORTANT)
+      # =========================
+      - name: Install vcpkg dependencies
+        shell: cmd
+        run: |
+          cd vcpkg
+          vcpkg install --triplet x64-windows
+
+      # =========================
+      # 5. Configure CMake
+      # =========================
       - name: Configure CMake
         shell: cmd
         run: |
           cmake -B build -S . -G Ninja ^
             -DCMAKE_BUILD_TYPE=Release ^
             -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
+            -DVCPKG_TARGET_TRIPLET=x64-windows ^
             -DVCPKG_MANIFEST_MODE=ON
 
-      # ----------------------------
-      # Build
-      # ----------------------------
+      # =========================
+      # 6. Build
+      # =========================
       - name: Build
         run: cmake --build build --config Release
 
-      # ----------------------------
-      # Deploy Qt runtime
-      # ----------------------------
-      - name: Deploy
+      # =========================
+      # 7. Deploy Qt runtime
+      # =========================
+      - name: Deploy Qt
         shell: cmd
         run: |
           mkdir release
@@ -71,18 +81,18 @@ jobs:
           set PATH=%QT_ROOT_DIR%\bin;%PATH%
           windeployqt --release --qmldir qml release\XiaozhiClient.exe
 
-      # ----------------------------
-      # ZIP
-      # ----------------------------
+      # =========================
+      # 8. Package
+      # =========================
       - name: Create ZIP
         shell: powershell
         run: |
           Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
 
-      # ----------------------------
-      # Release
-      # ----------------------------
-      - name: Create GitHub Release
+      # =========================
+      # 9. GitHub Release
+      # =========================
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           files: XiaozhiClient-Windows.zip
