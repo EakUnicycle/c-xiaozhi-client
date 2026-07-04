@@ -10,55 +10,35 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # ---------------- VCPKG ----------------
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Clone vcpkg
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
           bootstrap-vcpkg.bat
+          vcpkg integrate install
 
-      - name: Install dependencies
+      - name: Install deps
         run: |
-          vcpkg/vcpkg install openssl opus paho-mqttpp3
+          vcpkg/vcpkg install openssl:x64-windows opus:x64-windows paho-mqttpp3:x64-windows
 
-      # ---------------- QT ----------------
       - name: Setup Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.5.3'
+          arch: win64_msvc2019_64
           modules: 'qtmultimedia qtwebsockets'
-          cache: true
 
-      # ---------------- CMAKE ----------------
-      - name: Configure CMake
+      - name: Configure
         run: |
           cmake -B build -S . -G Ninja ^
             -DCMAKE_BUILD_TYPE=Release ^
-            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+            -DCMAKE_TOOLCHAIN_FILE=%CD%/vcpkg/scripts/buildsystems/vcpkg.cmake ^
             -DVCPKG_TARGET_TRIPLET=x64-windows
 
-      # ---------------- BUILD ----------------
       - name: Build
         run: cmake --build build --config Release
-
-      # ---------------- DEPLOY ----------------
-      - name: Deploy
-        shell: cmd
-        run: |
-          mkdir release
-          copy build\Release\XiaozhiClient.exe release\
-          windeployqt --release --qmldir qml release\XiaozhiClient.exe
-
-      - name: Create ZIP
-        shell: powershell
-        run: Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
-
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: XiaozhiClient-Windows.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
