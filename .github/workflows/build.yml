@@ -10,89 +10,53 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # =========================
-      # 1. Checkout
-      # =========================
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # =========================
-      # 2. Qt Setup
-      # =========================
-      - name: Setup Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: "6.8.3"
-          host: "windows"
-          target: "desktop"
-          arch: "win64_msvc2022_64"
-          modules: "qtmultimedia qtwebsockets"
-
-      # =========================
-      # 3. Setup vcpkg
-      # =========================
-      - name: Setup vcpkg
-        shell: cmd
+      # ---------------- VCPKG ----------------
+      - name: Clone vcpkg
         run: |
           git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
           bootstrap-vcpkg.bat
 
-      - name: Set VCPKG_ROOT
-        shell: cmd
-        run: echo VCPKG_ROOT=%GITHUB_WORKSPACE%\vcpkg>> %GITHUB_ENV%
-
-      # =========================
-      # 4. Install dependencies (IMPORTANT)
-      # =========================
-      - name: Install vcpkg dependencies
-        shell: cmd
+      - name: Install dependencies
         run: |
-          cd vcpkg
-          vcpkg install --triplet x64-windows
+          vcpkg/vcpkg install openssl opus paho-mqttpp3
 
-      # =========================
-      # 5. Configure CMake
-      # =========================
+      # ---------------- QT ----------------
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.5.3'
+          modules: 'qtmultimedia qtwebsockets'
+          cache: true
+
+      # ---------------- CMAKE ----------------
       - name: Configure CMake
-        shell: cmd
         run: |
           cmake -B build -S . -G Ninja ^
             -DCMAKE_BUILD_TYPE=Release ^
-            -DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake ^
-            -DVCPKG_TARGET_TRIPLET=x64-windows ^
-            -DVCPKG_MANIFEST_MODE=ON
+            -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake ^
+            -DVCPKG_TARGET_TRIPLET=x64-windows
 
-      # =========================
-      # 6. Build
-      # =========================
+      # ---------------- BUILD ----------------
       - name: Build
         run: cmake --build build --config Release
 
-      # =========================
-      # 7. Deploy Qt runtime
-      # =========================
-      - name: Deploy Qt
+      # ---------------- DEPLOY ----------------
+      - name: Deploy
         shell: cmd
         run: |
           mkdir release
           copy build\Release\XiaozhiClient.exe release\
-
-          set PATH=%QT_ROOT_DIR%\bin;%PATH%
           windeployqt --release --qmldir qml release\XiaozhiClient.exe
 
-      # =========================
-      # 8. Package
-      # =========================
       - name: Create ZIP
         shell: powershell
-        run: |
-          Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
+        run: Compress-Archive -Path release\* -DestinationPath XiaozhiClient-Windows.zip
 
-      # =========================
-      # 9. GitHub Release
-      # =========================
-      - name: Create Release
+      - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: XiaozhiClient-Windows.zip
