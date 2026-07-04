@@ -1,0 +1,9 @@
+{
+  "name": "xiaozhi-client",
+  "version": "1.0.0",
+  "dependencies": [
+    "openssl",
+    "opus",
+    "paho-mqttpp3"
+  ]
+}
