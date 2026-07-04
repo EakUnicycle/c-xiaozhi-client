@@ -8,11 +8,35 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Show environment
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v5
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.8.3"
+          host: "windows"
+          target: "desktop"
+          arch: "win64_msvc2022_64"
+      - name: Configure CMake
         run: |
-          cmake --version
-          git --version
+          cmake -B build -S . -G Ninja -DCMAKE_BUILD_TYPE=Release
+      - name: Build Project
+        run: |
+          cmake --build build --config Release
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xiaozhi-build
+          path: |
+            build/**/*.exe
+            build/**/Release/*
+      - name: Deploy Qt
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -Path build -Recurse -Filter *.exe | Select-Object -First 1
+          $env:PATH = "$env:Qt6_DIR\bin;$env:PATH"
+          windeployqt $exe.FullName
+
